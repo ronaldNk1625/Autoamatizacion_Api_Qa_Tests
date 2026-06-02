@@ -1,16 +1,102 @@
-# Conclusiones del Ejercicio de Automatización
+=========================================================
+CONCLUSIONES DEL EJERCICIO DE AUTOMATIZACION E2E
+Proyecto: Demoblaze - Cypress
+Autor: Ronald Berrones
+Fecha: Junio 2026
+=========================================================
 
-## Hallazgos del ejercicio
-- La página web "Demoblaze" es una aplicación de una sola página (SPA) que utiliza alertas nativas del navegador (window:alert) para notificar al usuario cuando un producto se agrega al carrito. Cypress maneja estas alertas automáticamente y permite interceptarlas usando el evento `window:alert`.
-- Los tiempos de carga entre la página principal y el detalle del producto son rápidos, pero es importante tener aserciones claras o tiempos de espera controlados para asegurar que la página ha cargado antes de interactuar, especialmente en las transiciones entre agregar un producto y volver al inicio.
+---------------------------------------------------------
+1. HALLAZGOS DEL EJERCICIO
+---------------------------------------------------------
 
-## Validaciones realizadas
-1. Se validó la alerta nativa del navegador con el texto "Product added" después de hacer clic en "Add to cart".
-2. Se verificó que la tabla del carrito de compras contenga los dos productos seleccionados ("Samsung galaxy s6" y "Nokia lumia 1520").
-3. Se comprobó la apertura del modal del formulario de compra y se llenaron exitosamente todos los campos requeridos con la información de Ronald Berrones.
-4. Se validó que el mensaje de éxito "Thank you for your purchase!" aparezca en un modal tipo "SweetAlert" tras finalizar la compra.
+- La plataforma Demoblaze (https://www.demoblaze.com/) es una Single Page
+  Application (SPA) que utiliza alertas nativas del navegador (window.alert)
+  para notificar al usuario cuando un producto se agrega al carrito. Cypress
+  intercepta y acepta estas alertas automáticamente, lo que permite que el
+  flujo de la prueba no se detenga por diálogos emergentes.
 
-## Conclusiones técnicas
-- Cypress demuestra ser una herramienta sumamente eficiente para automatizar flujos E2E complejos, proporcionando comandos integrados y encadenamiento intuitivo.
-- El patrón de interceptar alertas nativas es fundamental en aplicaciones web clásicas para evitar que la prueba se detenga; Cypress brilla en esto al auto-aceptarlas.
-- La aserción sobre elementos dinámicos (como el modal de confirmación de compra de la librería SweetAlert) fue exitosa gracias al sistema de reintentos automáticos (retry-ability) de Cypress, lo que ayuda a evitar falsos positivos por problemas de sincronización de la interfaz.
+- La navegación entre páginas (catálogo → detalle del producto → carrito)
+  se realiza mediante JavaScript y carga dinámica de contenido, lo cual
+  requiere el uso de aserciones explícitas (como verificar que los elementos
+  del DOM estén presentes) en lugar de depender únicamente de la URL.
+
+- El formulario de compra se despliega dentro de un modal Bootstrap
+  (id: orderModal), y la confirmación final utiliza la librería SweetAlert
+  para mostrar el mensaje de éxito. Ambos componentes fueron identificados
+  e interactuados exitosamente por Cypress.
+
+- Los productos se listan dinámicamente en el DOM usando tarjetas (cards).
+  Fue necesario esperar a que las tarjetas se rendericen antes de hacer clic,
+  utilizando la capacidad de retry automático de Cypress.
+
+- Se identificó que el sitio no requiere autenticación para completar una
+  compra, lo que simplifica el flujo de prueba pero también representa una
+  posible área de mejora en pruebas de seguridad.
+
+---------------------------------------------------------
+2. VALIDACIONES REALIZADAS
+---------------------------------------------------------
+
+1. Carga de la página principal: Se validó que la URL contiene "demoblaze.com"
+   y que se renderizan tarjetas de productos visibles en el catálogo.
+
+2. Navegación al detalle del producto: Para cada producto (Samsung galaxy s6
+   y Nokia lumia 1520), se verificó que el nombre del producto coincida con
+   el esperado antes de agregarlo al carrito.
+
+3. Alerta de producto agregado: Se interceptaron las alertas nativas del
+   navegador y se verificó que el texto contenga "Product added." para ambos
+   productos. Se utilizó un arreglo de captura para validar que exactamente
+   dos alertas fueron disparadas durante el flujo.
+
+4. Presencia de productos en el carrito: Se comprobó que la tabla del carrito
+   contenga dos filas (tr.success) y que ambas filas incluyan los nombres
+   de los productos seleccionados.
+
+5. Modal de formulario de compra: Se validó que el modal orderModal sea
+   visible antes de llenar los campos del formulario con los datos de
+   Ronald Berrones (nombre, país, ciudad, tarjeta, mes, año).
+
+6. Mensaje de confirmación de compra: Se verificó que el componente
+   SweetAlert muestre el texto "Thank you for your purchase!" y que el
+   resumen de la compra incluya el nombre y el número de tarjeta ingresados.
+
+7. Cierre del flujo: Tras hacer clic en "OK", se validó que la navegación
+   regrese a la página principal de Demoblaze.
+
+---------------------------------------------------------
+3. CONCLUSIONES TECNICAS
+---------------------------------------------------------
+
+- Cypress demuestra ser una herramienta altamente eficiente para la
+  automatización de pruebas E2E en aplicaciones web modernas. Su capacidad
+  de encadenamiento de comandos, reintentos automáticos (retry-ability) y
+  manejo nativo de alertas lo convierten en una opción superior para este
+  tipo de flujos.
+
+- El patrón de interceptar alertas nativas con cy.on('window:alert') es
+  fundamental en aplicaciones clásicas que dependen de window.alert() para
+  retroalimentación al usuario. Cypress las acepta automáticamente sin
+  detener la ejecución, pero es posible capturarlas en un arreglo para
+  realizar aserciones explícitas sobre su contenido y cantidad.
+
+- La aserción sobre elementos dinámicos (como el modal SweetAlert de
+  confirmación de compra) fue exitosa gracias al sistema de reintentos
+  automáticos de Cypress, que reintenta las aserciones hasta que se
+  cumplen o se agota el timeout. Esto reduce drásticamente los falsos
+  negativos causados por problemas de sincronización de la interfaz.
+
+- El uso de selectores específicos (IDs de formulario, clases CSS como
+  .sweet-alert, #orderModal, .card-title) permitió que las pruebas sean
+  estables y resistentes a cambios cosméticos menores en la interfaz.
+
+- La centralización de datos de prueba en variables al inicio del archivo
+  facilita el mantenimiento futuro del script; si los datos cambian, solo
+  se modifica un lugar sin necesidad de editar múltiples líneas de código.
+
+- Se recomienda para proyectos más grandes implementar el patrón
+  Page Object Model (POM) para separar la lógica de interacción con la
+  interfaz de la lógica de aserciones, mejorando la escalabilidad y
+  legibilidad del código de pruebas.
+
+=========================================================

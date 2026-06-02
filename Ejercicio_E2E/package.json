@@ -1,0 +1,21 @@
+{
+  "name": "ejercicio-e2e-cypress",
+  "version": "1.0.0",
+  "description": "Proyecto completo de automatización E2E usando Cypress para Demoblaze",
+  "main": "index.js",
+  "scripts": {
+    "open": "cypress open",
+    "test": "cypress run"
+  },
+  "keywords": [
+    "cypress",
+    "e2e",
+    "automation",
+    "demoblaze"
+  ],
+  "author": "Ronald Berrones",
+  "license": "ISC",
+  "devDependencies": {
+    "cypress": "^13.17.0"
+  }
+}
