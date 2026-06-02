@@ -8,7 +8,7 @@
     "pretest": "npm run clean:reports",
     "test": "cypress run",
     "report:merge": "npx mochawesome-merge reports/mocha/*.json > reports/report.json",
-    "report:generate": "npx marge reports/report.json -o reports/html --inline",
+    "report:generate": "npx marge reports/report.json -o reports -f report --inline",
     "report": "npm run report:merge && npm run report:generate"
   },
   "keywords": [

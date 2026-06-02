@@ -65,7 +65,7 @@ INSTRUCCIONES DE EJECUCIÓN (PASO A PASO)
    npm run report
 
    * Esto creará un reporte unificado en la siguiente ruta:
-     reports/html/report.html
+     reports/report.html
    * Abre ese archivo en cualquier navegador para ver el resultado detallado de las pruebas.
 
 ------------------------------------------------------------------------
