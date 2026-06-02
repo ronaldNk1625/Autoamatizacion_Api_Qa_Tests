@@ -1,0 +1,6 @@
+{
+  "invalidUser": {
+    "username": "invalid_user_non_existent_qa",
+    "password": "wrong_password_123"
+  }
+}

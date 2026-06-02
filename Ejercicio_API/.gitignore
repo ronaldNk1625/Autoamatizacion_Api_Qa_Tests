@@ -1,0 +1,19 @@
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnp*
+.git/
+
+# Cypress folders
+cypress/videos/
+cypress/screenshots/
+cypress/downloads/
+
+# Mochawesome reports
+reports/
+
+# IDE / System
+.vscode/
+.DS_Store
+Thumbs.db

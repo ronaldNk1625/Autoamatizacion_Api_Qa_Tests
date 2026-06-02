@@ -1,0 +1,54 @@
+========================================================================
+REPORTES Y CONCLUSIONES TÉCNICAS DE QA - DEMOBLAZE API REST
+========================================================================
+
+Como Senior QA Automation Engineer, se presentan las siguientes conclusiones 
+y observaciones críticas sobre la API REST de Demoblaze (endpoints /signup y /login):
+
+------------------------------------------------------------------------
+1. COMPORTAMIENTO DEL SIGNUP (POST /signup)
+------------------------------------------------------------------------
+* Éxito (Usuario Nuevo):
+  - Retorna un código de estado HTTP 200 OK.
+  - El cuerpo de la respuesta es un string JSON vacío: "".
+* Error (Usuario Duplicado):
+  - Retorna un código de estado HTTP 200 OK.
+  - El cuerpo de la respuesta es un objeto JSON: {"errorMessage":"This user already exist."}.
+  - Hallazgo ortográfico (Bug menor): El mensaje dice "already exist." en lugar del correcto "already exists." en inglés.
+
+------------------------------------------------------------------------
+2. COMPORTAMIENTO DEL LOGIN (POST /login)
+------------------------------------------------------------------------
+* Éxito (Credenciales Correctas):
+  - Retorna un código de estado HTTP 200 OK.
+  - El cuerpo de la respuesta no es un objeto estructurado tradicional (ej: {"token": "..."}), sino un string directo de texto con formato JSON: "Auth_token: <token>".
+* Error (Contraseña Incorrecta):
+  - Retorna un código de estado HTTP 200 OK.
+  - Cuerpo: {"errorMessage":"Wrong password."}.
+* Error (Usuario Inexistente):
+  - Retorna un código de estado HTTP 200 OK.
+  - Cuerpo: {"errorMessage":"User does not exist."}.
+
+------------------------------------------------------------------------
+3. VALIDACIONES Y ESTRATEGIA DE AUTOMATIZACIÓN DETECTADAS
+------------------------------------------------------------------------
+* Manejo del Código de Estado HTTP: Debido a que la API siempre responde con status code 200 OK, es imperativo no confiar únicamente en assertions de "status code 200". 
+  - La estrategia correcta fue implementar aserciones detalladas sobre la estructura del body de respuesta.
+  - En Cypress, se utilizó 'failOnStatusCode: false' para blindar el framework ante cambios futuros en la API que implementen códigos 4xx.
+* Generación Dinámica de Datos: El uso de @faker-js/faker es indispensable para las pruebas de Signup, ya que los usuarios registrados se graban permanentemente en la base de datos de Demoblaze, lo que generaría falsos positivos en ejecuciones sucesivas si se usaran datos fijos.
+
+------------------------------------------------------------------------
+4. DEFECTOS DETECTADOS Y PROPUESTAS DE MEJORA (Best Practices)
+------------------------------------------------------------------------
+* Defecto 1 (Arquitectura REST - Status Codes):
+  - Problema: Retornar HTTP 200 OK para fallos lógicos como credenciales incorrectas, usuarios duplicados o usuarios inexistentes no cumple con las directrices de la arquitectura RESTful.
+  - Mejora propuesta: La API debería responder con:
+    - 409 Conflict para registros duplicados.
+    - 401 Unauthorized para contraseñas incorrectas o credenciales inválidas.
+    - 404 Not Found (o 401) para usuarios inexistentes en el intento de login.
+* Defecto 2 (Formato de Respuesta de Login):
+  - Problema: Retornar el token como un string plano prefijado ("Auth_token: <token>") dentro de un JSON string es difícil de deserializar y poco estándar.
+  - Mejora propuesta: Retornar un objeto JSON normalizado como {"token": "<token>"} o {"authToken": "<token>"} con tipos de datos correctos.
+* Defecto 3 (Mensajes de Error e Internacionalización):
+  - Problema: Existe un error tipográfico ("already exist.") y los mensajes están hardcodeados en inglés.
+  - Mejora propuesta: Corregir a "already exists." y, idealmente, utilizar códigos de error estructurados (ej. {"errorCode": "USER_ALREADY_EXISTS"}) en lugar de strings de visualización directa, para permitir traducción y mejor gestión en el frontend.
