@@ -1,0 +1,16 @@
+# Conclusiones del Ejercicio de Automatización
+
+## Hallazgos del ejercicio
+- La página web "Demoblaze" es una aplicación de una sola página (SPA) que utiliza alertas nativas del navegador (window:alert) para notificar al usuario cuando un producto se agrega al carrito. Cypress maneja estas alertas automáticamente y permite interceptarlas usando el evento `window:alert`.
+- Los tiempos de carga entre la página principal y el detalle del producto son rápidos, pero es importante tener aserciones claras o tiempos de espera controlados para asegurar que la página ha cargado antes de interactuar, especialmente en las transiciones entre agregar un producto y volver al inicio.
+
+## Validaciones realizadas
+1. Se validó la alerta nativa del navegador con el texto "Product added" después de hacer clic en "Add to cart".
+2. Se verificó que la tabla del carrito de compras contenga los dos productos seleccionados ("Samsung galaxy s6" y "Nokia lumia 1520").
+3. Se comprobó la apertura del modal del formulario de compra y se llenaron exitosamente todos los campos requeridos con la información de Ronald Berrones.
+4. Se validó que el mensaje de éxito "Thank you for your purchase!" aparezca en un modal tipo "SweetAlert" tras finalizar la compra.
+
+## Conclusiones técnicas
+- Cypress demuestra ser una herramienta sumamente eficiente para automatizar flujos E2E complejos, proporcionando comandos integrados y encadenamiento intuitivo.
+- El patrón de interceptar alertas nativas es fundamental en aplicaciones web clásicas para evitar que la prueba se detenga; Cypress brilla en esto al auto-aceptarlas.
+- La aserción sobre elementos dinámicos (como el modal de confirmación de compra de la librería SweetAlert) fue exitosa gracias al sistema de reintentos automáticos (retry-ability) de Cypress, lo que ayuda a evitar falsos positivos por problemas de sincronización de la interfaz.
